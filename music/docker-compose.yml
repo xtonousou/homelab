@@ -20,7 +20,7 @@ services:
           - "node.role != manager"
 
   deemix:
-    image: "registry.gitlab.com/bockiii/deemix-docker"
+    image: "ghcr.io/bambanah/deemix:latest"
     environment:
       PUID: "${PUID}"
       PGID: "${PGID}"
