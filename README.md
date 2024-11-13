@@ -1,5 +1,7 @@
 # homelab-docker-swarm
 
+![physical-architecture](assets/xtonousou-homelab.svg)
+
 ## Setup shared Docker Swarm volumes with JuiceFS
 
 > All the below steps MUST be executed **on each docker worker** once.
