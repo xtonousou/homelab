@@ -40,7 +40,7 @@ services:
 
 volumes:
   jfs-navidrome-data:
-    driver: "juicedata/juicefs"
+    driver: "juicefs"
     driver_opts:
       metaurl: "${JFS_META_URL__NAVIDROME_DATA}"
       name: "${JFS_VOLUME_NAME__NAVIDROME_DATA}"
@@ -51,7 +51,7 @@ volumes:
       env: "AWS_REGION=${JFS_S3_REGION},MINIO_REGION=${JFS_S3_REGION}"
 
   jfs-music:
-    driver: "juicedata/juicefs"
+    driver: "juicefs"
     driver_opts:
       metaurl: "${JFS_META_URL__MUSIC}"
       name: "${JFS_VOLUME_NAME__MUSIC}"
@@ -62,7 +62,7 @@ volumes:
       env: "AWS_REGION=${JFS_S3_REGION},MINIO_REGION=${JFS_S3_REGION}"
 
   jfs-deemix-config:
-    driver: "juicedata/juicefs"
+    driver: "juicefs"
     driver_opts:
       metaurl: "${JFS_META_URL__DEEMIX_CONFIG}"
       name: "${JFS_VOLUME_NAME__DEEMIX_CONFIG}"
