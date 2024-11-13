@@ -34,21 +34,18 @@
     > This will create a Minio bucket named "**ds-data**" with a volume inside named "**shared**"
 
     ```bash
-    # export MINIO variables on current shell
+    # export variables to current shell
     export MINIO_REGION=$(awk -F'=' '/MINIO_REGION=/{print $2}' /etc/default/juicefs)
     export MINIO_HOST="https://s3.local:9000"  # example
     export MINIO_BUCKET="ds-data"  # example
     export MINIO_VOLUME="shared"  # example
     export MINIO_ACCESS_KEY="gHaFppe1PLHmaEKHHCe3"  # example
     export MINIO_SECRET_KEY="AsJFtOL7Cfku6vEun6r60pizKV0nxnESNFDidn9C"  # example
-
-    # export JuiceFS variables on current shell
     export JFS_REDIS_USERNAME=$(awk -F'=' '/JFS_REDIS_USERNAME=/{print $2}' /etc/default/juicefs)
     export JFS_REDIS_PASSWORD=$(awk -F'=' '/JFS_REDIS_PASSWORD=/{print $2}' /etc/default/juicefs)
     export JFS_REDIS_HOST=$(awk -F'=' '/JFS_REDIS_HOST=/{print $2}' /etc/default/juicefs)
     export JFS_REDIS_PORT=$(awk -F'=' '/JFS_REDIS_PORT=/{print $2}' /etc/default/juicefs)
 
-    # MINIO_ACCESS_KEY and MINIO_SECRET_KEY are placeholders
     juicefs format \
         --trash-days 0 \
         --storage minio \
