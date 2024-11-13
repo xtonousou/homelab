@@ -46,8 +46,8 @@ volumes:
       name: "${JFS_VOLUME_NAME__NAVIDROME_CONFIG}"
       storage: "${JFS_STORAGE}"
       bucket: "${JFS_BUCKET__NAVIDROME_CONFIG}"
-      access-key: "${JFS_ACCESS_KEY}"
-      secret-key: "${JFS_SECRET_KEY}"
+      access-key: "${JFS_S3_ACCESS_KEY}"
+      secret-key: "${JFS_S3_SECRET_KEY}"
       env:
         AWS_REGION: "${JFS_S3_REGION}"
         MINIO_REGION: "${JFS_S3_REGION}"
@@ -59,8 +59,8 @@ volumes:
       name: "${JFS_VOLUME_NAME__NAVIDROME_DATA}"
       storage: "${JFS_STORAGE}"
       bucket: "${JFS_BUCKET__NAVIDROME_DATA}"
-      access-key: "${JFS_ACCESS_KEY}"
-      secret-key: "${JFS_SECRET_KEY}"
+      access-key: "${JFS_S3_ACCESS_KEY}"
+      secret-key: "${JFS_S3_SECRET_KEY}"
       env:
         AWS_REGION: "${JFS_S3_REGION}"
         MINIO_REGION: "${JFS_S3_REGION}"
@@ -72,8 +72,8 @@ volumes:
       name: "${JFS_VOLUME_NAME__DEEMIX_CONFIG}"
       storage: "${JFS_STORAGE}"
       bucket: "${JFS_BUCKET__DEEMIX_CONFIG}"
-      access-key: "${JFS_ACCESS_KEY}"
-      secret-key: "${JFS_SECRET_KEY}"
+      access-key: "${JFS_S3_ACCESS_KEY}"
+      secret-key: "${JFS_S3_SECRET_KEY}"
       env:
         AWS_REGION: "${JFS_S3_REGION}"
         MINIO_REGION: "${JFS_S3_REGION}"
