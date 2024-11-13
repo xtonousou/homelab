@@ -1,0 +1,39 @@
+services:
+  navidrome:
+    image: "deluan/navidrome:latest"
+    user: "1000:1000"
+    environment:
+      ND_SCANSCHEDULE: "${ND_SCANSCHEDULE}"
+      ND_LOGLEVEL: "${ND_LOGLEVEL}"
+      ND_SESSIONTIMEOUT: "${ND_SESSIONTIMEOUT}"
+      ND_BASEURL: "${ND_BASEURL}"
+    ports:
+      - "4533:4533"
+    volumes:
+      - "/juicefs/services/navidrome/data:/data"
+      - "/juicefs/music:/music:ro"
+    deploy:
+      mode: "replicated"
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role != manager"
+
+  deemix:
+    image: "ghcr.io/bambanah/deemix:latest"
+    environment:
+      PUID: "${PUID}"
+      PGID: "${PGID}"
+      UMASK_SET: "${UMASK_SET}"
+      DEEMIX_SINGLE_USER: "${DEEMIX_SINGLE_USER}"
+    ports:
+      - "6595:6595"
+    volumes:
+      - "/juicefs/services/deemix/config:/config"
+      - "/juicefs/music:/downloads"
+    deploy:
+      mode: "replicated"
+      replicas: 1
+      placement:
+        constraints:
+          - "node.role != manager"

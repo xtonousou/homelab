@@ -46,6 +46,7 @@
     export JFS_REDIS_HOST=$(awk -F'=' '/JFS_REDIS_HOST=/{print $2}' /etc/default/juicefs)
     export JFS_REDIS_PORT=$(awk -F'=' '/JFS_REDIS_PORT=/{print $2}' /etc/default/juicefs)
 
+    # do not worry, if you run it again it will not delete any previous data if not forced
     juicefs format \
         --trash-days 0 \
         --storage minio \
