@@ -10,8 +10,8 @@ services:
     ports:
       - "4533:4533"
     volumes:
-      - "omv-navidrome:/data"
-      - "omv-music:/music:ro"
+      - "jfs-navidrome-config:/data"
+      - "jfs-navidrome-data:/music:ro"
     deploy:
       mode: "replicated"
       replicas: 1
@@ -29,8 +29,8 @@ services:
     ports:
       - "6595:6595"
     volumes:
-      - "omv-deemix:/config"
-      - "omv-music:/downloads"
+      - "jfs-deemix-config:/config"
+      - "jfs-navidrome-data:/downloads"
     deploy:
       mode: "replicated"
       replicas: 1
@@ -39,23 +39,41 @@ services:
           - "node.role != manager"
 
 volumes:
-  omv-music:
-    driver: "local"
+  jfs-navidrome-config:
+    driver: "juicedata/juicefs"
     driver_opts:
-      type: "nfs"
-      o: "addr=omv.xt.local,noatime,nodiratime,nfsvers=4.2"
-      device: ":/music"
+      metaurl: "${JFS_META_URL__NAVIDROME_CONFIG}"
+      name: "${JFS_VOLUME_NAME__NAVIDROME_CONFIG}"
+      storage: "${JFS_STORAGE}"
+      bucket: "${JFS_BUCKET__NAVIDROME_CONFIG}"
+      access-key: "${JFS_ACCESS_KEY}"
+      secret-key: "${JFS_SECRET_KEY}"
+      env:
+        AWS_REGION: "${JFS_S3_REGION}"
+        MINIO_REGION: "${JFS_S3_REGION}"
 
-  omv-navidrome:
-    driver: "local"
+  jfs-navidrome-data:
+    driver: "juicedata/juicefs"
     driver_opts:
-      type: "nfs"
-      o: "addr=omv.xt.local,noatime,nodiratime,nfsvers=4.2"
-      device: ":/navidrome"
+      metaurl: "${JFS_META_URL__NAVIDROME_DATA}"
+      name: "${JFS_VOLUME_NAME__NAVIDROME_DATA}"
+      storage: "${JFS_STORAGE}"
+      bucket: "${JFS_BUCKET__NAVIDROME_DATA}"
+      access-key: "${JFS_ACCESS_KEY}"
+      secret-key: "${JFS_SECRET_KEY}"
+      env:
+        AWS_REGION: "${JFS_S3_REGION}"
+        MINIO_REGION: "${JFS_S3_REGION}"
 
-  omv-deemix:
-    driver: "local"
+  jfs-deemix-config:
+    driver: "juicedata/juicefs"
     driver_opts:
-      type: "nfs"
-      o: "addr=omv.xt.local,noatime,nodiratime,nfsvers=4.2"
-      device: ":/deemix"
+      metaurl: "${JFS_META_URL__DEEMIX_CONFIG}"
+      name: "${JFS_VOLUME_NAME__DEEMIX_CONFIG}"
+      storage: "${JFS_STORAGE}"
+      bucket: "${JFS_BUCKET__DEEMIX_CONFIG}"
+      access-key: "${JFS_ACCESS_KEY}"
+      secret-key: "${JFS_SECRET_KEY}"
+      env:
+        AWS_REGION: "${JFS_S3_REGION}"
+        MINIO_REGION: "${JFS_S3_REGION}"

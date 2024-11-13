@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 # Author: Sotirios Roussis <root@xtonousou.com>
+# !!!UNUSED!!!
 
 import os
 import base64
@@ -99,10 +100,11 @@ if deemix_username and deemix_password:
 # Download Spotify tracks via Deemix
 deemix_download_url = f"{deemix_host}/api/addToQueue"
 for track_href, track_name in spotify_tracks.items():
-    print(f"[deemix] Queueing spotify track '{track_name}' for download: {track_href}")
+    track_url = f"https://open.spotify.com/track/{track_href.split('/')[-1]}"
+    print(f"[deemix] Queueing spotify track '{track_name}' for download: {track_url}")
     deemix_response = deemix_session.post(deemix_download_url, headers=deemix_headers, json={
         # "bitrate": None,
-        "url": track_href,
+        "url": track_url,
     })
     print(deemix_response.text)
     deemix_response.raise_for_status()
