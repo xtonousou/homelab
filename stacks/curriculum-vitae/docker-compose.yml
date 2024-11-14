@@ -63,6 +63,8 @@ services:
       STORAGE_SKIP_BUCKET_CHECK: "${APP_STORAGE_SKIP_BUCKET_CHECK}"
       DISABLE_SIGNUPS: "${APP_DISABLE_SIGNUPS}"
       DISABLE_EMAIL_AUTH: "${APP_DISABLE_EMAIL_AUTH}"
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
     deploy:
       mode: "replicated"
       replicas: 1
