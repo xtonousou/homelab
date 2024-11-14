@@ -2,6 +2,8 @@
 
 What is [JuiceFS](https://juicefs.com/docs/community/getting-started/for_distributed?ref=git.xtuxnet.com)? A High-Performance, Cloud-Native, Distributed File System.
 
+> The below guide supports AWS and Minio S3 buckets.
+
 ## Prepare the hosts
 
 > All the below steps MUST be executed **on each docker worker** once.
@@ -17,6 +19,8 @@ What is [JuiceFS](https://juicefs.com/docs/community/getting-started/for_distrib
     ```bash
     # create file
     cat << 'EOF' > /etc/default/juicefs
+    S3_REGION=homelab
+    AWS_REGION=homelab
     MINIO_REGION=homelab
     JFS_REDIS_USERNAME=redis
     JFS_REDIS_PASSWORD=redispass
@@ -38,25 +42,28 @@ What is [JuiceFS](https://juicefs.com/docs/community/getting-started/for_distrib
 
     ```bash
     # export variables to current shell
-    export MINIO_REGION=$(awk -F'=' '/MINIO_REGION=/{print $2}' /etc/default/juicefs)
-    export MINIO_HOST="https://s3.local:9000"  # example
-    export MINIO_BUCKET="ds-data"  # example
-    export MINIO_VOLUME="shared"  # example
-    export MINIO_ACCESS_KEY="gHaFppe1PLHmaEKHHCe3"  # example
-    export MINIO_SECRET_KEY="AsJFtOL7Cfku6vEun6r60pizKV0nxnESNFDidn9C"  # example
+    export S3_REGION=$(awk -F'=' '/S3_REGION=/{print $2}' /etc/default/juicefs)
+    export MINIO_REGION="${S3_REGION}"
+    export AWS_REGION="${S3_REGION}"
+    export S3_HOST="https://s3.local:9000"  # example
+    export S3_BUCKET="ds-data"  # example
+    export S3_VOLUME="shared"  # example
+    export S3_ACCESS_KEY="gHaFppe1PLHmaEKHHCe3"  # example
+    export S3_SECRET_KEY="AsJFtOL7Cfku6vEun6r60pizKV0nxnESNFDidn9C"  # example
     export JFS_REDIS_USERNAME=$(awk -F'=' '/JFS_REDIS_USERNAME=/{print $2}' /etc/default/juicefs)
     export JFS_REDIS_PASSWORD=$(awk -F'=' '/JFS_REDIS_PASSWORD=/{print $2}' /etc/default/juicefs)
     export JFS_REDIS_HOST=$(awk -F'=' '/JFS_REDIS_HOST=/{print $2}' /etc/default/juicefs)
     export JFS_REDIS_PORT=$(awk -F'=' '/JFS_REDIS_PORT=/{print $2}' /etc/default/juicefs)
 
     # do not worry, if you run it again it will not delete any previous data if not forced
+    # replace "--storage minio" with "--storage s3" if the bucket is on AWS
     juicefs format \
         --trash-days 0 \
         --storage minio \
-        --bucket "${MINIO_HOST}/${MINIO_BUCKET}?tls-insecure-skip-verify=true" \
-        --access-key "${MINIO_ACCESS_KEY}" \
-        --secret-key "${MINIO_SECRET_KEY}" \
-        "redis://${JFS_REDIS_USERNAME}:${JFS_REDIS_PASSWORD}@${JFS_REDIS_HOST}:${JFS_REDIS_PORT}/1" "${MINIO_VOLUME}"
+        --bucket "${S3_HOST}/${S3_BUCKET}?tls-insecure-skip-verify=true" \
+        --access-key "${S3_ACCESS_KEY}" \
+        --secret-key "${S3_SECRET_KEY}" \
+        "redis://${JFS_REDIS_USERNAME}:${JFS_REDIS_PASSWORD}@${JFS_REDIS_HOST}:${JFS_REDIS_PORT}/1" "${S3_VOLUME}"
     ```
 
 5. Create symlink for `mount.juicefs`.
