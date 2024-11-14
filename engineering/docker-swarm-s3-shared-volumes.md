@@ -23,6 +23,7 @@ What is [JuiceFS](https://juicefs.com/docs/community/getting-started/for_distrib
     JFS_REDIS_HOST=redis.local
     JFS_REDIS_PORT=6379
     EOF
+
     # secure permissions
     chmod 0600 /etc/default/juicefs
     ```
