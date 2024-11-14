@@ -1,4 +1,4 @@
-# Setup shared Docker Swarm volumes with JuiceFS
+# Setup shared Docker volumes with JuiceFS
 
 What is [JuiceFS](https://juicefs.com/docs/community/getting-started/for_distributed?ref=git.xtuxnet.com)? A High-Performance, Cloud-Native, Distributed File System.
 
