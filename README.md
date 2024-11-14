@@ -8,7 +8,9 @@ Homelab `[hom-læb](n)`: a laboratory of (usually slightly outdated) awesome in 
 
 ## Services index
 
-* [Music streaming](stacks/music)
+* [Monitoring networks, servers and apps with Zabbix](stacks/monitoring)
+* [Music streaming with Navidrome and Deemix](stacks/music)
+* [Resume builder and manager with Reactive-Resume](stacks/curriculum-vitae)
 
 ## Engineering notes
 
