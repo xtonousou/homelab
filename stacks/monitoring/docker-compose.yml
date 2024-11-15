@@ -116,7 +116,7 @@ services:
       ZBX_SSO_IDP_CERT: "${ZBX_SSO_IDP_CERT}"
       ZBX_SSO_SETTINGS: "${ZBX_SSO_SETTINGS}"
     ports:
-      - "80:80"
+      - "8080:8080"
     volumes:
       - "/juicefs/services/zabbix/web/certs:/etc/zabbix/web/certs:ro"
     deploy:
