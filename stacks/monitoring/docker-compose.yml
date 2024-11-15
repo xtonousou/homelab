@@ -133,7 +133,7 @@ services:
     environment:
       ZBX_SNMP_TRAP_USE_DNS: "${ZBX_SNMP_TRAP_USE_DNS:-false}"
     ports:
-      - "80:80"
+      - "162:1162/udp"
     volumes:
       - "/juicefs/services/zabbix/common/snmptraps:/var/lib/zabbix/snmptraps"
       - "/juicefs/services/zabbix/common/mibs:/var/lib/zabbix/mibs"
