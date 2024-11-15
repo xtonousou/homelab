@@ -1,0 +1,169 @@
+---
+services:
+  zabbix-server:
+    image: "zabbix/zabbix-server-pgsql:${ZBX_IMAGE_TAG:-alpine-7.0-latest}"
+    environment:
+      DB_SERVER_HOST: "${DB_SERVER_HOST:-postgres}"
+      DB_SERVER_PORT: "${DB_SERVER_PORT:-5432}"
+      POSTGRES_USER: "${POSTGRES_USER:-zabbix}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-zabbix}"
+      POSTGRES_DB: "${POSTGRES_DB:-zabbix}"
+      ZBX_DEBUGLEVEL: "${ZBX_DEBUGLEVEL:-3}"
+      ZBX_TIMEOUT: "${ZBX_TIMEOUT:-10}"
+      ZBX_JAVAGATEWAY_ENABLE: "${ZBX_JAVAGATEWAY_ENABLE:-false}"
+      ZBX_STARTREPORTWRITERS: "${ZBX_STARTREPORTWRITERS:-0}"
+      ZBX_SERVICEMANAGERSYNCFREQUENCY: "${ZBX_SERVICEMANAGERSYNCFREQUENCY:-60}"
+      ZBX_ENABLEGLOBALSCRIPTS: "${ZBX_ENABLEGLOBALSCRIPTS:-0}"
+      ZBX_STARTPOLLERS: "${ZBX_STARTPOLLERS:-5}"
+      ZBX_STARTIPMIPOLLERS: "${ZBX_STARTIPMIPOLLERS:-0}"
+      ZBX_STARTCONNECTORS: "${ZBX_STARTCONNECTORS:-0}"
+      ZBX_STARTPREPROCESSORS: "${ZBX_STARTPREPROCESSORS:-3}"
+      ZBX_STARTPOLLERSUNREACHABLE: "${ZBX_STARTPOLLERSUNREACHABLE:-1}"
+      ZBX_STARTTRAPPERS: "${ZBX_STARTTRAPPERS:-5}"
+      ZBX_STARTPINGERS: "${ZBX_STARTPINGERS:-1}"
+      ZBX_STARTDISCOVERERS: "${ZBX_STARTDISCOVERERS:-1}"
+      ZBX_STARTHISTORYPOLLERS: "${ZBX_STARTHISTORYPOLLERS:-5}"
+      ZBX_STARTHTTPPOLLERS: "${ZBX_STARTHTTPPOLLERS:-1}"
+      ZBX_STARTODBCPOLLERS: "${ZBX_STARTODBCPOLLERS:-0}"
+      ZBX_STARTTIMERS: "${ZBX_STARTTIMERS:-1}"
+      ZBX_STARTESCALATORS: "${ZBX_STARTESCALATORS:-1}"
+      ZBX_STARTALERTERS: "${ZBX_STARTALERTERS:-3}"
+      ZBX_JAVAGATEWAY: "${ZBX_JAVAGATEWAY:-zabbix-java-gateway}"
+      ZBX_JAVAGATEWAYPORT: "${ZBX_JAVAGATEWAYPORT:-10052}"
+      ZBX_STARTJAVAPOLLERS: "${ZBX_STARTJAVAPOLLERS:-0}"
+      ZBX_STARTLLDPROCESSORS: "${ZBX_STARTLLDPROCESSORS:-2}"
+      ZBX_STARTVMWARECOLLECTORS: "${ZBX_STARTVMWARECOLLECTORS:-0}"
+      ZBX_VMWAREFREQUENCY: "${ZBX_VMWAREFREQUENCY:-60}"
+      ZBX_VMWAREPERFFREQUENCY: "${ZBX_VMWAREPERFFREQUENCY:-60}"
+      ZBX_VMWARECACHESIZE: "${ZBX_VMWARECACHESIZE:-8M}"
+      ZBX_VMWARETIMEOUT: "${ZBX_VMWARETIMEOUT:-10}"
+      ZBX_ENABLE_SNMP_TRAPS: "${ZBX_ENABLE_SNMP_TRAPS:-false}"
+      ZBX_HOUSEKEEPINGFREQUENCY: "${ZBX_HOUSEKEEPINGFREQUENCY:-1}"
+      ZBX_MAXHOUSEKEEPERDELETE: "${ZBX_MAXHOUSEKEEPERDELETE:-5000}"
+      ZBX_PROBLEMHOUSEKEEPINGFREQUENCY: "${ZBX_PROBLEMHOUSEKEEPINGFREQUENCY:-60}"
+      ZBX_SENDERFREQUENCY: "${ZBX_SENDERFREQUENCY:-30}"
+      ZBX_CACHESIZE: "${ZBX_CACHESIZE:-8M}"
+      ZBX_CACHEUPDATEFREQUENCY: "${ZBX_CACHEUPDATEFREQUENCY:-10}"
+      ZBX_STARTDBSYNCERS: "${ZBX_STARTDBSYNCERS:-4}"
+      ZBX_EXPORTFILESIZE: "${ZBX_EXPORTFILESIZE:-1G}"
+      ZBX_HISTORYCACHESIZE: "${ZBX_HISTORYCACHESIZE:-16M}"
+      ZBX_HISTORYINDEXCACHESIZE: "${ZBX_HISTORYINDEXCACHESIZE:-4M}"
+      ZBX_HISTORYSTORAGEDATEINDEX: "${ZBX_HISTORYSTORAGEDATEINDEX:-0}"
+      ZBX_TRENDCACHESIZE: "${ZBX_TRENDCACHESIZE:-4M}"
+      ZBX_TRENDFUNCTIONCACHESIZE: "${ZBX_TRENDFUNCTIONCACHESIZE:-4M}"
+      ZBX_VALUECACHESIZE: "${ZBX_VALUECACHESIZE:-8M}"
+      ZBX_TRAPPERTIMEOUT: "${ZBX_TRAPPERTIMEOUT:-300}"
+      ZBX_UNREACHABLEPERIOD: "${ZBX_UNREACHABLEPERIOD:-45}"
+      ZBX_UNAVAILABLEDELAY: "${ZBX_UNAVAILABLEDELAY:-60}"
+      ZBX_UNREACHABLEDELAY: "${ZBX_UNREACHABLEDELAY:-15}"
+      ZBX_LOGSLOWQUERIES: "${ZBX_LOGSLOWQUERIES:-3000}"
+      ZBX_STARTPROXYPOLLERS: "${ZBX_STARTPROXYPOLLERS:-0}"
+      ZBX_PROXYCONFIGFREQUENCY: "${ZBX_PROXYCONFIGFREQUENCY:-10}"
+      ZBX_PROXYDATAFREQUENCY: "${ZBX_PROXYDATAFREQUENCY:-1}"
+      ZBX_STARTBROWSERPOLLERS: "${ZBX_STARTBROWSERPOLLERS:-0}"
+    ports:
+      - "10051:10051"
+      # - "10052:10052"  # uncomment this if you use Java Gateway
+    cap_add:
+      - "NET_RAW"  # fping: Operation not permitted
+    sysctls:
+      - "net.ipv4.ping_group_range=0 1995"  # fping: non-root environment
+    volumes:
+      - "/juicefs/services/zabbix/server/alertscripts:/usr/lib/zabbix/alertscripts"
+      - "/juicefs/services/zabbix/server/externalscripts:/usr/lib/zabbix/externalscripts"
+      - "/juicefs/services/zabbix/server/ssh_keys:/var/lib/zabbix/ssh_keys"
+      - "/juicefs/services/zabbix/common/snmptraps:/var/lib/zabbix/snmptraps"
+      - "/juicefs/services/zabbix/common/mibs:/var/lib/zabbix/mibs"
+      - "/juicefs/services/zabbix/server/export:/var/lib/zabbix/export"
+    deploy:
+      mode: "replicated"
+      replicas: 1
+      restart_policy:
+        condition: "on-failure"
+      placement:
+        constraints:
+          - "node.role != manager"
+
+  zabbix-web:
+    image: "zabbix/zabbix-web-nginx-pgsql:${ZBX_IMAGE_TAG:-alpine-7.0-latest}"
+    environment:
+      DB_SERVER_HOST: "${DB_SERVER_HOST:-postgres}"
+      DB_SERVER_PORT: "${DB_SERVER_PORT:-5432}"
+      POSTGRES_USER: "${POSTGRES_USER:-zabbix}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-zabbix}"
+      POSTGRES_DB: "${POSTGRES_DB:-zabbix}"
+      PHP_TZ: "${PHP_TZ:-Europe/Athens}"
+      PHP_FPM_PM: "${PHP_FPM_PM:-dynamic}"
+      PHP_FPM_PM_MAX_CHILDREN: "${PHP_FPM_PM_MAX_CHILDREN:-50}"
+      PHP_FPM_PM_START_SERVERS: "${PHP_FPM_PM_START_SERVERS:-5}"
+      PHP_FPM_PM_MIN_SPARE_SERVERS: "${PHP_FPM_PM_MIN_SPARE_SERVERS:-5}"
+      PHP_FPM_PM_MAX_SPARE_SERVERS: "${PHP_FPM_PM_MAX_SPARE_SERVERS:-35}"
+      PHP_FPM_PM_MAX_REQUESTS: "${PHP_FPM_PM_MAX_REQUESTS:-0}"
+      EXPOSE_WEB_SERVER_INFO: "${EXPOSE_WEB_SERVER_INFO:-off}"
+      ZBX_SERVER_NAME: "${ZBX_SERVER_NAME:-zabbix}"
+      ZBX_MAXEXECUTIONTIME: "${ZBX_MAXEXECUTIONTIME:-300}"
+      ZBX_MAXINPUTTIME: "${ZBX_MAXINPUTTIME:-300}"
+      ZBX_MEMORYLIMIT: "${ZBX_MEMORYLIMIT:-128M}"
+      ZBX_POSTMAXSIZE: "${ZBX_POSTMAXSIZE:-16M}"
+      ZBX_UPLOADMAXFILESIZE: "${ZBX_UPLOADMAXFILESIZE:-2M}"
+      ZBX_SESSION_NAME: "${ZBX_SESSION_NAME:-zbxsid}"
+      ZBX_DENY_GUI_ACCESS: "${ZBX_DENY_GUI_ACCESS:-false}"
+      ZBX_GUI_ACCESS_IP_RANGE: "${ZBX_GUI_ACCESS_IP_RANGE:-192.168.1.0/24}"
+      ZBX_GUI_WARNING_MSG: "${ZBX_GUI_WARNING_MSG:-Zabbix is under maintenance.}"
+      ZBX_DB_ENCRYPTION: "${ZBX_DB_ENCRYPTION:-false}"
+      ZBX_SSO_SP_KEY: "${ZBX_SSO_SP_KEY}"
+      ZBX_SSO_SP_CERT: "${ZBX_SSO_SP_CERT}"
+      ZBX_SSO_IDP_CERT: "${ZBX_SSO_IDP_CERT}"
+      ZBX_SSO_SETTINGS: "${ZBX_SSO_SETTINGS}"
+    ports:
+      - "80:80"
+    volumes:
+      - "/juicefs/services/zabbix/web/certs:/etc/zabbix/web/certs:ro"
+    deploy:
+      mode: "replicated"
+      replicas: 1
+      restart_policy:
+        condition: "on-failure"
+      placement:
+        constraints:
+          - "node.role != manager"
+
+  zabbix-snmptraps:
+    image: "zabbix/zabbix-snmptraps:${ZBX_IMAGE_TAG:-alpine-7.0-latest}"
+    environment:
+      ZBX_SNMP_TRAP_USE_DNS: "${ZBX_SNMP_TRAP_USE_DNS:-false}"
+    ports:
+      - "80:80"
+    volumes:
+      - "/juicefs/services/zabbix/common/snmptraps:/var/lib/zabbix/snmptraps"
+      - "/juicefs/services/zabbix/common/mibs:/var/lib/zabbix/mibs"
+    deploy:
+      mode: "replicated"
+      replicas: 1
+      restart_policy:
+        condition: "on-failure"
+      placement:
+        constraints:
+          - "node.role != manager"
+
+  postgres:
+    image: "postgres:${POSTGRES_IMAGE_TAG:-16-alpine}"
+    volumes:
+      - "/juicefs/services/zabbix/database/postgres:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
+    deploy:
+      mode: "replicated"
+      replicas: 1
+      restart_policy:
+        condition: "on-failure"
+      placement:
+        constraints:
+          - "node.role != manager"
