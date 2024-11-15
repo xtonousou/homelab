@@ -4,9 +4,9 @@ services:
     image: "deluan/navidrome:latest"
     user: "1000:1000"
     environment:
-      ND_SCANSCHEDULE: "${ND_SCANSCHEDULE}"
-      ND_LOGLEVEL: "${ND_LOGLEVEL}"
-      ND_SESSIONTIMEOUT: "${ND_SESSIONTIMEOUT}"
+      ND_SCANSCHEDULE: "${ND_SCANSCHEDULE:-1h}"
+      ND_LOGLEVEL: "${ND_LOGLEVEL:-info}"
+      ND_SESSIONTIMEOUT: "${ND_SESSIONTIMEOUT:-24h}"
       ND_BASEURL: "${ND_BASEURL}"
     ports:
       - "4533:4533"
@@ -25,10 +25,10 @@ services:
   deemix:
     image: "ghcr.io/bambanah/deemix:latest"
     environment:
-      PUID: "${PUID}"
-      PGID: "${PGID}"
-      UMASK_SET: "${UMASK_SET}"
-      DEEMIX_SINGLE_USER: "${DEEMIX_SINGLE_USER}"
+      PUID: "${PUID:-1000}"
+      PGID: "${PGID:-1000}"
+      UMASK_SET: "${UMASK_SET:-022}"
+      DEEMIX_SINGLE_USER: "${DEEMIX_SINGLE_USER:-true}"
     ports:
       - "6595:6595"
     volumes:

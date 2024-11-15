@@ -5,11 +5,11 @@ services:
     volumes:
       - "/juicefs/services/reactive-resume/postgres:/var/lib/postgresql/data"
     environment:
-      POSTGRES_DB: "${POSTGRES_DB}"
-      POSTGRES_USER: "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB:-postgres}"
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres}"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-postgres}"]
       interval: "10s"
       timeout: "5s"
       retries: 5
@@ -25,11 +25,11 @@ services:
   chrome:
     image: "ghcr.io/browserless/chromium:latest"
     environment:
-      TIMEOUT: "${CHROME_TIMEOUT}"
-      CONCURRENT: "${CHROME_CONCURRENT}"
-      TOKEN: "${CHROME_TOKEN}"
-      EXIT_ON_HEALTH_FAILURE: "${CHROME_EXIT_ON_HEALTH_FAILURE}"
-      PRE_REQUEST_HEALTH_CHECK: "${CHROME_PRE_REQUEST_HEALTH_CHECK}"
+      TIMEOUT: "${CHROME_TIMEOUT:-10000}"
+      CONCURRENT: "${CHROME_CONCURRENT:-2}"
+      TOKEN: "${CHROME_TOKEN:-Chr0m3_T0k3n}"
+      EXIT_ON_HEALTH_FAILURE: "${CHROME_EXIT_ON_HEALTH_FAILURE:-true}"
+      PRE_REQUEST_HEALTH_CHECK: "${CHROME_PRE_REQUEST_HEALTH_CHECK:-true}"
     deploy:
       mode: "replicated"
       replicas: 1
@@ -42,27 +42,27 @@ services:
   app:
     image: "amruthpillai/reactive-resume:latest"
     environment:
-      PORT: "${APP_PORT}"
-      NODE_ENV: "${APP_NODE_ENV}"
-      NODE_TLS_REJECT_UNAUTHORIZED: "${APP_NODE_TLS_REJECT_UNAUTHORIZED}"
-      PUBLIC_URL: "${APP_PUBLIC_URL}"
-      STORAGE_URL: "${APP_STORAGE_URL}/${APP_STORAGE_BUCKET}"
-      CHROME_TOKEN: "${CHROME_TOKEN}"
-      CHROME_URL: "${APP_CHROME_URL}"
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
-      ACCESS_TOKEN_SECRET: "${APP_ACCESS_TOKEN_SECRET}"
-      REFRESH_TOKEN_SECRET: "${APP_REFRESH_TOKEN_SECRET}"
-      MAIL_FROM: "${APP_MAIL_FROM}"
-      STORAGE_ENDPOINT: "${APP_STORAGE_ENDPOINT}"
-      STORAGE_PORT: "${APP_STORAGE_PORT}"
-      STORAGE_REGION: "${APP_STORAGE_REGION}"
-      STORAGE_BUCKET: "${APP_STORAGE_BUCKET}"
-      STORAGE_ACCESS_KEY: "${APP_STORAGE_ACCESS_KEY}"
-      STORAGE_SECRET_KEY: "${APP_STORAGE_SECRET_KEY}"
-      STORAGE_USE_SSL: "${APP_STORAGE_USE_SSL}"
-      STORAGE_SKIP_BUCKET_CHECK: "${APP_STORAGE_SKIP_BUCKET_CHECK}"
-      DISABLE_SIGNUPS: "${APP_DISABLE_SIGNUPS}"
-      DISABLE_EMAIL_AUTH: "${APP_DISABLE_EMAIL_AUTH}"
+      PORT: "${APP_PORT:-3000}"
+      NODE_ENV: "${APP_NODE_ENV:-production}"
+      NODE_TLS_REJECT_UNAUTHORIZED: "${APP_NODE_TLS_REJECT_UNAUTHORIZED:-0}"
+      PUBLIC_URL: "${APP_PUBLIC_URL:-https://cv.example.com}"
+      STORAGE_URL: "${APP_STORAGE_URL:-https://storage.example.com}/${APP_STORAGE_BUCKET:-cvbucket}"  # workaround to expose correct URL paths
+      CHROME_TOKEN: "${CHROME_TOKEN:-Chr0m3_T0k3n}"
+      CHROME_URL: "${APP_CHROME_URL:-ws://chrome:3000}"
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-postgres}"
+      ACCESS_TOKEN_SECRET: "${APP_ACCESS_TOKEN_SECRET:-pitsos}"
+      REFRESH_TOKEN_SECRET: "${APP_REFRESH_TOKEN_SECRET:-pipitsos}"
+      MAIL_FROM: "${APP_MAIL_FROM:-cv@example.com}"
+      STORAGE_ENDPOINT: "${APP_STORAGE_ENDPOINT:-storage.example.com}"
+      STORAGE_PORT: "${APP_STORAGE_PORT:-9000}"
+      STORAGE_REGION: "${APP_STORAGE_REGION:-homelab}"
+      STORAGE_BUCKET: "${APP_STORAGE_BUCKET:-cvbucket}"
+      STORAGE_ACCESS_KEY: "${APP_STORAGE_ACCESS_KEY:-fretse}"
+      STORAGE_SECRET_KEY: "${APP_STORAGE_SECRET_KEY:-fretsepetsi}"
+      STORAGE_USE_SSL: "${APP_STORAGE_USE_SSL:-true}"
+      STORAGE_SKIP_BUCKET_CHECK: "${APP_STORAGE_SKIP_BUCKET_CHECK:-false}"
+      DISABLE_SIGNUPS: "${APP_DISABLE_SIGNUPS:-false}"  # register first and then disable
+      DISABLE_EMAIL_AUTH: "${APP_DISABLE_EMAIL_AUTH:-false}"
     ports:
       - "${APP_PORT}:${APP_PORT}"
     deploy:
